@@ -2,8 +2,10 @@ from django.shortcuts import render, redirect
 from account.models import KYC, Account
 from account.forms import KYCForm
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
+@login_required
 def account(request):
     if request.user.is_authenticated:
         try:
@@ -22,7 +24,7 @@ def account(request):
         "account":account,
     }
     return render(request, "account/account.html", context)
-
+@login_required
 def kyc_registration(request):
     user = request.user
     account = Account.objects.get(user=user)
