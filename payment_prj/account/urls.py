@@ -5,7 +5,8 @@ app_name="account"
 
 
 urlpatterns=[
-    path("kyc-reg/",views.kyc_registration,name="kyc-reg"),
+    path("dashboard/",views.dashboard,name="dashboard"),
     path("",views.account, name="account"),
+    path("kyc-reg/",views.kyc_registration,name="kyc-reg"),
 
 ]

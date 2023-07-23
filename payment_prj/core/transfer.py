@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from account.models import Account
 from django.db.models import Q
 from django.contrib import messages
+from decimal import Decimal
 from django.contrib.auth.decorators import login_required
 
 from core.models import Transaction
@@ -50,7 +51,7 @@ def AmountTransferProcess(request,account_number):
         amount=request.POST.get("amount")
         description = request.POST.get("description")
 
-        if sender_account.account_balance>0 and amount:
+        if sender_account.account_balance>=Decimal(amount):
             new_transaction = Transaction.objects.create(
                 user=request.user,
                 amount=amount,
@@ -117,3 +118,17 @@ def TransferProcess(request, account_number, transaction_id):
     else:
         messages.warning(request,"An error. Please try again later")
         return redirect("account:account")
+
+
+def TransferCompleted(request, account_number, transaction_id):
+    try:
+        account = Account.objects.get(account_number=account_number)
+        transaction = Transaction.objects.get(transaction_id=transaction_id)
+    except:
+        messages.warning(request,"Such transfer does not exist.")
+        return redirect("account:account")
+    context = {
+        "account":account,
+        "transaction":transaction
+    }
+    return render(request, "transfer/transfer-completed.html",context)
